@@ -1,0 +1,32 @@
+<style>
+* {
+    background-color: #CF6766;
+}
+form {
+    display:inline;
+    margin: 20px;
+    color: #031424;
+}
+input[type="text"] {
+    font-family: Verdana;
+    background-color: #8EAEBD;
+    color: #0311424;
+    border: 2px solid #30415D;
+    border-radius: 4px;
+}
+input[type="submit"] {
+    background-color: #8EAEBD;
+    border: 2px solid #30415D;
+    border-radius: 4px;
+}
+hr {
+    border: 2px solid #30415D;
+    border-top: 1px solid #8EAEBD;
+}
+h1 {
+    font-family: Verdana;
+    color: #30415D;
+}
+</style>
+.h(text="CIS2750 Messaging Service",size=1).d()
+.i(action="home.php",text="Username: ",name="username",value="Default")

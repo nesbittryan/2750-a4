@@ -1,0 +1,46 @@
+<style>
+* {
+    background-color: #CF6766;
+}
+form {
+    display:inline;
+    margin: 20px;
+    color: #031424;
+}
+input[type="text"] {
+    font-family: Verdana;
+    background-color: #8EAEBD;
+    color: #031424;
+    border: 2px solid #30415D;
+    border-radius: 4px;
+}
+input[type="submit"] {
+    background-color: #8EAEBD;
+    border: 2px solid #30415D;
+    border-radius: 4px;
+}
+input[name="message"] {
+    width: 50%;
+    box-sizing: border-box;
+    background-color: #8EAEBD;
+}
+hr {
+    border: 2px solid #30415D;
+    border-top: 1px solid #8EAEBD;
+}
+h1,h2,h3,h4,h5,h6 {
+    font-family: Verdana;
+    color: #30415D;
+}
+p {
+    font-family: Verdana;
+    margin: 20px;
+    color: #031424;
+}
+</style>
+.h(text="CIS2750 Messaging System",size=1).d()
+.b(name="Home",link="home.php",hInput=1)
+.b(name="Add/Remove Author",link="addremoveAuthor.php",hInput=1)
+.b(name="New Post",link="addPost.php",hInput=1).b(name="Select Stream",link="selectStream.php",hInput=1)
+.b(name="Logout",link="index.php")
+.d()

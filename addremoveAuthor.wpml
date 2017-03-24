@@ -1,0 +1,2 @@
+.h(text="Add/Remove Authors").d()
+.i(action="processAddRemoveAuthor.php",hInput=1,text="Author Name:",name="author",value="Default",text=" Add/Remove: ",name="flag",value="add",text=" Streams[,]:",name="streamlist",value="DefaultStream")

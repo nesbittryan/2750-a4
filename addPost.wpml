@@ -1,0 +1,2 @@
+.h(text="Add New Post").d()
+.i(action="processAddPost.php",hInput=1,text="Stream:",name="stream",value="DefaultStream",text="Message:",name="message",value="Type the message in here")

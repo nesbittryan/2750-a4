@@ -1,0 +1,176 @@
+- Assignment 4 - Database Access
+- ------------------------------
+- Due date: Friday, March 24, 2017 by midnight (extension to March 31).
+- 
+- Add MySQL database access to your programs to store and retrieve the
+- posts and related information.
+- Write a small utility program which allows the user to view and
+- manage the database.
+- 
+- 1. Database Access in C
+- -----------------------
+- Replace the file operations used to store posts, user and stream information
+- with SQL operations. Access the database through C using embedded mysql.
+- This will involve some changes to the Python program to access the
+- database using C.
+- 
+- You will need to create tables for each file in the messaging system.
+- The types for each column in the database are mostly simple text or
+- numeric values. The exception is the messages column which will need to be
+- variable sized character columns.  Pick reasonable and meaningful names
+- for the columns.
+- 
+- 
+- 
+- 2. Database Reset Program
+- -------------------------
+- Write a small C program to manage the database. Use embedded mysql
+- to access the database.
+- 
+- Name this compiled program db and the C source code db.c.
+- 
+- When used with the -clear flag (e.g. db -clear) the program
+- removes all of the posts, users, streams and any other information
+- from the tables in the database.
+- 
+- When used with the -reset flag the program deletes the tables
+- from the database.
+- 
+- When used with the -posts flag the program prints out all posts
+- stored in the database.
+- 
+- When used with the -users flag the program prints out all user names 
+- stored in the database. 
+- 
+- When used with the -streams flag the program prints out all stream
+- names stored in the database.
+- 
+- Order of the output does not matter for any of the options which print
+- the contents of a table.
+- 
+- When used with the -help flag it prints out a usage message.
+- 
+- 
+- 
+- 
+- Web Server Access
+- -----------------
+- The web server is 2750web.socs.uoguelph.ca. It will be used in the same
+- way as it was for assignment 3. All of your programs will be tested
+- on this machine. 
+- 
+- 
+- Database Access
+- ---------------
+- The database server is dursley.socs.uoguelph.ca. You can access the
+- database using your seven digit student number as your password. 
+- You do not need to login to this machine to run your assignment.
+- All database access for your programs is through remote calls from
+- the 2750web machine.
+- 
+- 
+- 
+- Handin Notes
+- ------------
+- 1. This assignment will be regraded only if the marker makes a mistake.
+- This includes problems such as recording the grade incorrectly,
+- not following instructions in the readme.txt when running the program, or
+- calculating the final grade incorrectly.
+- 
+- If the assignment is submitted incorrectly, if it does not compile,
+- if files are missing or incomplete, or if the web interface does not
+- function when index.php is accessed through a web browser then a grade of
+- zero will be assigned.
+- 
+- 2. Submit the assignment using the dropbox for Assignment 4 in Courselink.
+- 
+- 3. Include a readme.txt which contains your name, student number, and a short
+- description of any parts of the program which do not function correctly.
+- If there are some circumstances where functions don't always work correctly
+- or if they don't work at all then include this information in the readme.txt.
+- If there are special instructions which are necessary to make your C program
+- work correctly then you should include them in the readme.txt.
+- This should be a plain text file and not a .doc, .docx, or .pdf file.
+- 
+- 4. Your code must compile and run on the the Linux distribution used for
+- the course.  If it does not then it will receive a grade of zero.
+- 
+- 5. Submit your source files necessary to compile your C code, a makefile that
+- will compile the code, and any .c and .h  file necessary to build the project.
+- Also include any .php, .py  or .html files necessary to build your interface.
+- 
+- Any executables in the directory will be removed before make is run.
+- Do not submit any compiled code, it will be deleted before your program
+- is compiled.
+- 
+- 6. Do not use any global variables.
+- 
+- 7. Format your code properly and use meaningful variable names.
+-   
+- 8. All code is to be written individually. No group work is allowed.
+-    You cannot use code found on the internet for the assignment.
+-    You cannot use any tools that generate code such as lexers,
+-    compiler-compilers, parsers, regular expression libraries
+-    or interface builders for this assignment.  
+- 
+- Submitting the Assignment
+- ------------------------
+- 1. Backup your files. Either store them in a source code repository such
+-    as Git or copy them to a backup directory. If you accidentally destroy
+-    your files while trying to tar them then this will allow you to recover
+-    them. Do not use a public Git repository as other people will be able
+-    to view your code. Use a private Git repo.
+- 2. Package your .c, .h, .cc, .html, .php, .py, makefile, config file, and readme.txt in a tar
+-    file.  Do not omit a4.tar in the following line or you will destroy your
+-    assignment.  The file is created using:
+- 
+-        tar cf a4.tar *.h *.c *.cc *.html *.php .py <and any files necessary to run your assignment> makefile readme.txt
+- 
+- 3. You can check the contents in the tar archive using:
+- 
+-    tar tf a4.tar
+- 
+-    If the tar file does not contain all of the files necessary to build
+-    your assignment and the readme.txt then rebuild the archive.
+- 
+- 4. Testing your submission:
+-    -make a directory named testing
+-    -copy the a4.tar file into the testing directory
+-    -change into the testing directory
+-    -in the testing directory unpack the tar file using
+-       tar xvf a4.tar
+-    -type make
+-    At this point the executables should be in the current directory.
+-    If it is not then determine why the program didn't compile properly
+-    and recreate the tar file.
+- 
+- 5. Once you have a tar file that will unpack properly and you can build
+-    the executable by typing make you can then submit the a4.tar file
+-    to the CIS*2750 dropbox on courselink.
+- 
+- Follow the above steps to compile the C code.
+- If you do not then you cannot be sure that your assignment can be marked.
+- If any of the above steps fail then you will receive a substantial loss
+- of marks.
+- 
+- 
+- Marking the Assignment
+- ---------------------
+- The following steps will be followed to compile your C program:
+- 
+-     The file you submit will be copied into a marking directory.
+-     The marker will cd into that directory.
+-     The submission file will be unpacked using tar xvf a4.tar.
+-     The marker will not cd to another subdirectory.
+-     The marker will type make.
+-     At this point the C and CC programs should be compiled and 
+-        in the current directory.
+- 
+- 
+- If there is no makefile in the directory,  the assignment does not compile,
+- or the compiled programs are not named post and addauthor, or if the code
+- is in a subdirectory, then the assignment will receive a substantial loss
+- of marks.
+ 
+ 
+
