@@ -1,9 +1,3 @@
-/*==========================================================================
-
-Example using mySQL
-
-==========================================================================*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,37 +5,37 @@ Example using mySQL
 
 #define MAX_QUERY 512
 #define HOSTNAME  "dursley.socs.uoguelph.ca"
-/*
-	HOSTNAME can be defined with IP or hostname.
-
-	eg: #define HOSTNAME "131.104.49.147"
-	    #define HOSTNAME "gradpc-38.cis.uoguelph.ca"
-
-*/
-
 #define USERNAME  "nesbittr"
 #define PASSWORD  "0915819"
-#define DATABASE  "database"
+#define DATABASE  "nesbittr"
 
-/*
-	standard error clause.
-*/
-void error(char *msg, MYSQL *mysql){
-	printf("%s\n%s\n",msg,mysql_error(mysql));
-	exit(1);
-}
+void error(char *msg, MYSQL *mysql);
 
-/*
-	clear the contents of an array of char's
-*/
-void clrstr(char *buf){
-	buf[0] = '\0';
-}
+void clrstr(char *buf);
 
-/*==========================================================================
-	MAIN - mydb.c
-==========================================================================*/
+void printUsage();
+
 int main(int argc, char *argv[]) {
+	int j = 1;
+	if(argv[j] == NULL) return(-1);
+	while(argv[j] != NULL) {
+		if(strcmp(argv[j], "-clear") == 0) {
+			printf("Clear\n");
+		} else if(strcmp(argv[j], "-reset") == 0) {
+			printf("Reset\n");
+		} else if(strcmp(argv[j], "-reset") == 0) {
+
+		} else if(strcmp(argv[j], "-posts") == 0) {
+
+		} else if(strcmp(argv[j], "-users") == 0) {
+
+		} else if(strcmp(argv[j], "-streams") == 0) {
+
+		} else if(strcmp(argv[j], "-help") == 0) {
+			printUsage();
+		}
+		++j;
+	}
 	MYSQL mysql;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -175,4 +169,21 @@ int main(int argc, char *argv[]) {
 	printf("All done\n");
 
 	return 0;
+}
+
+void printUsage() {
+	printf("Flag: -clear Usage: removes all posts, users, streams and other information from the tables\n");
+	printf("Flag: -reset Usage: deletes the tables from the database\n");
+	printf("Flag: -posts Usage: prints out all posts stored in the database\n");
+	printf("Flag: -users Usage: prints out all user names stored in the database\n");
+	printf("Flag: -streams Usage: prints out all stream names stored in the database\n");
+	printf("Flag: -help Usage: prints this message\n");
+}
+
+void error(char *msg, MYSQL *mysql){
+	printf("%s\n%s\n",msg,mysql_error(mysql));
+	exit(1);
+}
+void clrstr(char *buf) {
+	buf[0] = '\0';
 }
