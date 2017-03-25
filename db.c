@@ -15,16 +15,27 @@ void clrstr(char *buf);
 
 void printUsage();
 
+void clearTables(MYSQL *mysql);
+
+void resetDatabase(MYSQL *mysql);
+
 int main(int argc, char *argv[]) {
+	/* Opening connection to server */
+	MYSQL mysql;
+	mysql_init(&mysql);
+	mysql_options(&mysql, MYSQL_READ_DEFAULT_GROUP, "mydb");
+	if (!mysql_real_connect(&mysql, HOSTNAME, USERNAME, PASSWORD,
+		DATABASE, 0, NULL, 0)) {
+	   error("Could not connect to host.",&mysql);
+	}
+	/* checking set flags */
 	int j = 1;
 	if(argv[j] == NULL) return(-1);
 	while(argv[j] != NULL) {
 		if(strcmp(argv[j], "-clear") == 0) {
-			printf("Clear\n");
+			clearTables(&mysql);
 		} else if(strcmp(argv[j], "-reset") == 0) {
-			printf("Reset\n");
-		} else if(strcmp(argv[j], "-reset") == 0) {
-
+			resetDatabase(&mysql);
 		} else if(strcmp(argv[j], "-posts") == 0) {
 
 		} else if(strcmp(argv[j], "-users") == 0) {
@@ -36,7 +47,6 @@ int main(int argc, char *argv[]) {
 		}
 		++j;
 	}
-	MYSQL mysql;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	MYSQL_FIELD *field;
@@ -48,21 +58,6 @@ int main(int argc, char *argv[]) {
 		"insert into students values (4,'Rudin','Walter','A-')",
 		"insert into students values (5,'Stevens','Richard','C')" };
 
-	/*
-		Connect to database server.
-		Username and password must be filled in here.
-		If no username or password is stored in DB then use NULL.
-	*/
-	printf("connecting...\n");
-
-	mysql_init(&mysql);
-	mysql_options(&mysql, MYSQL_READ_DEFAULT_GROUP, "mydb");
-	if (!mysql_real_connect(&mysql, HOSTNAME, USERNAME, PASSWORD,
-		DATABASE, 0, NULL, 0)) {
-	   error("Could not connect to host.",&mysql);
-	}
-
-	printf("Selecting a specific database to work with.\n");
 
 	/*
 		Build query
@@ -171,6 +166,31 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
+void resetDatabase(MYSQL *mysql) {
+	char query[MAX_QUERY];
+	strcpy(query, "drop table UserTable");
+	if(mysql_query(mysql, query)){
+		error("SQP Error:",mysql);
+	}
+	strcpy(query, "drop table MessageTable");
+	if(mysql_query(mysql, query)){
+		error("SQP Error:",mysql);
+	}
+}
+
+void clearTables(MYSQL *mysql) {
+	char query[MAX_QUERY];
+	clrstr(query);
+	strcpy(query, "truncate UserTable");
+	if(mysql_query(mysql, query)){
+		error("SQP Error:",mysql);
+	}
+	strcpy(query, "truncate MessageTable");
+	if(mysql_query(mysql, query)){
+		error("SQP Error:",mysql);
+	}
+}
+
 void printUsage() {
 	printf("Flag: -clear Usage: removes all posts, users, streams and other information from the tables\n");
 	printf("Flag: -reset Usage: deletes the tables from the database\n");
@@ -181,7 +201,7 @@ void printUsage() {
 }
 
 void error(char *msg, MYSQL *mysql){
-	printf("%s\n%s\n",msg,mysql_error(mysql));
+	printf("%s%s\n",msg,mysql_error(mysql));
 	exit(1);
 }
 void clrstr(char *buf) {
