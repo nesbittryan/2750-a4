@@ -96,30 +96,15 @@ class PostEntry {
 };
 
 int main(int argc, char ** argv) {
-
-    if(argc < 5) {
-        printf("USAGE: ./post streamname username[multiple words] MESSAGE_TEXT Message[multiple words]\n");
-        printf("ie. ./post s1 Ryan Nesbitt MESSAGE_TEXT Hello this is my message\n");
+    if(argc < 4) {
+        printf("USAGE: ./post streamname \"username\" \"Message\"\n");
+        printf("ie. ./post s1 \"Ryan Nesbitt\" \"Hello this is my message\"\n");
         return(-1);
     }
-    int i = 3;
     char name[100], stream[100], text[1000], date[100];
     strcpy(stream, argv[1]);
     strcpy(name, argv[2]);
-    while(strcmp(argv[i],"MESSAGE_TEXT") != 0) {
-        strcat(name, " ");
-        strcat(name, argv[i]);
-        ++i;
-    }
-    ++i;
-    strcpy(text, argv[i]);
-    ++i;
-    while(argv[i] != NULL) {
-        strcat(text, " ");
-        strcat(text, argv[i]);
-        ++i;
-    }
-    strcat(text, "\n");
+    strcpy(text, argv[3]);
     struct userPost up;
     class PostEntry myPost;
     myPost.getTimeDate(&date[0]);

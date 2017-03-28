@@ -1,23 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <mysql/mysql.h>
+#include "SQLfunctions.h"
 
 #define MAX_QUERY 512
 #define HOSTNAME  "dursley.socs.uoguelph.ca"
 #define USERNAME  "nesbittr"
 #define PASSWORD  "0915819"
 #define DATABASE  "nesbittr"
-
-void error(char *msg, MYSQL *mysql);
-
-void clrstr(char *buf);
-
-void printUsage();
-
-void clearTables(MYSQL *mysql);
-
-void resetDatabase(MYSQL *mysql);
 
 int main(int argc, char *argv[]) {
 	/* Opening connection to server */
@@ -26,9 +13,9 @@ int main(int argc, char *argv[]) {
 	mysql_options(&mysql, MYSQL_READ_DEFAULT_GROUP, "mydb");
 	if (!mysql_real_connect(&mysql, HOSTNAME, USERNAME, PASSWORD,
 		DATABASE, 0, NULL, 0)) {
-	   error("Could not connect to host.",&mysql);
+		printf("Could not connect to host!\n");
+		exit(-1);
 	}
-	/* checking set flags */
 	int j = 1;
 	if(argv[j] == NULL) return(-1);
 	while(argv[j] != NULL) {
@@ -37,173 +24,37 @@ int main(int argc, char *argv[]) {
 		} else if(strcmp(argv[j], "-reset") == 0) {
 			resetDatabase(&mysql);
 		} else if(strcmp(argv[j], "-posts") == 0) {
-
+			printPosts(&mysql);
 		} else if(strcmp(argv[j], "-users") == 0) {
-
+			printUsers(&mysql);
 		} else if(strcmp(argv[j], "-streams") == 0) {
-
+			printStreams(&mysql);
 		} else if(strcmp(argv[j], "-help") == 0) {
 			printUsage();
+		} else if(strcmp(argv[j], "-addauthor") == 0) {
+			if(argv[j+1] == NULL || argv[j+2] == NULL || argv[j+3] == NULL) {
+				printf("Inproper Usage...\n");
+			} else {
+				char username[64];
+				clrstr(username);
+				strcpy(username, argv[j+3]);
+				addAuthor(&mysql, argv[j+1], argv[j+2], username);
+				j = 4;
+			}
+		} else if(strcmp(argv[j], "-addpost") == 0) {
+			char date[64], username[64], message[255];
+			int l = 2;
+			strcpy(date, argv[j+l]);
+			++l;
+			strcpy(username, argv[j+l]);
+			++l;
+			strcpy(message, argv[j+l]);
+			addPost(&mysql, argv[j+1], date, username, message);
+			j = l + 1;
+		} else {
+			printf("Invalid command, use -help for list of valid commands\n");
 		}
 		++j;
 	}
-	MYSQL_RES *res;
-	MYSQL_ROW row;
-	MYSQL_FIELD *field;
-	char query[MAX_QUERY];
-	int x;
-	int i = 0;
-	char *records[] = {
-		"insert into students values (1,'Hugo','Victor','B+')",
-		"insert into students values (4,'Rudin','Walter','A-')",
-		"insert into students values (5,'Stevens','Richard','C')" };
-
-
-	/*
-		Build query
-	*/
-
-	clrstr(query);
-
-	strcat(query, "create table students (id int not null auto_increment,");
-	strcat(query, "last_name char(15),");
-	strcat(query, "first_name char(15),");
-	strcat(query, "mark char(2),");
-	strcat(query, "primary key(id) )");
-
-	printf("Creating students table.\n");
-
-	/*
-		Create students table
-	*/
-	if(mysql_query(&mysql, query)){
-	  error("Could not create table!",&mysql);
-	}
-
-	clrstr(query);
-
-	/*
-		Insert a records into the students table
-	*/
-
-	printf("Inserting students.\n");
-
-	for(x = 0; x < 3; x++){
-		if(mysql_query(&mysql, records[x])){
-			printf("Failure to insert: %s\n",records[x]);
-			error("Could not insert record",&mysql);
-		}
-	}
-
-	clrstr(query);
-
-	/*
-		Let us look at what we inserted
-	*/
-	strcpy(query, "select * from students order by last_name");
-
-	if(mysql_query(&mysql, query))
-	  error("failed select 1",&mysql);
-
-	/*
-		Store results from query into res structure.
-	*/
-	if (!(res = mysql_store_result(&mysql))){
-		error("failed store 1",&mysql);
-	}
-
-	/*
-		print first row elements
-	*/
-	while ((row = mysql_fetch_row(res))) {
-		printf("%s ", row[0]);
-	}
-
-	printf("\n");
-
-	/*
-		second query
-	*/
-	strcpy(query, "select * from students order by last_name");
-
-	if(mysql_query(&mysql, query)){
-		error("fail select 2",&mysql);
-	}
-
-	/*
-		Store results from query into res structure.
-	*/
-	if (!(res = mysql_store_result(&mysql))){
-		error("fail store 2",&mysql);
-	}
-
-	/*
-		print all results
-	*/
-	while ((row = mysql_fetch_row(res))) {
-		for (i=0; i < mysql_num_fields(res); i++){
-			printf("%s ", row[i]);
-		}
-		printf("\n");
-	}
-
-	/*
-		Drop the students table
-	*/
-
-	strcpy(query, "drop table students");
-
-	if(mysql_query(&mysql,query))
-	  error("fail drop 1",&mysql);
-
-	/*
-		Finally close connection to server
-	*/
-	mysql_close(&mysql);
-
-	printf("All done\n");
-
-	return 0;
-}
-
-void resetDatabase(MYSQL *mysql) {
-	char query[MAX_QUERY];
-	strcpy(query, "drop table UserTable");
-	if(mysql_query(mysql, query)){
-		error("SQP Error:",mysql);
-	}
-	strcpy(query, "drop table MessageTable");
-	if(mysql_query(mysql, query)){
-		error("SQP Error:",mysql);
-	}
-}
-
-void clearTables(MYSQL *mysql) {
-	char query[MAX_QUERY];
-	clrstr(query);
-	strcpy(query, "truncate UserTable");
-	if(mysql_query(mysql, query)){
-		error("SQP Error:",mysql);
-	}
-	strcpy(query, "truncate MessageTable");
-	if(mysql_query(mysql, query)){
-		error("SQP Error:",mysql);
-	}
-}
-
-void printUsage() {
-	printf("Flag: -clear Usage: removes all posts, users, streams and other information from the tables\n");
-	printf("Flag: -reset Usage: deletes the tables from the database\n");
-	printf("Flag: -posts Usage: prints out all posts stored in the database\n");
-	printf("Flag: -users Usage: prints out all user names stored in the database\n");
-	printf("Flag: -streams Usage: prints out all stream names stored in the database\n");
-	printf("Flag: -help Usage: prints this message\n");
-}
-
-void error(char *msg, MYSQL *mysql){
-	printf("%s%s\n",msg,mysql_error(mysql));
-	exit(1);
-}
-void clrstr(char *buf) {
-	buf[0] = '\0';
+	return(0);
 }
