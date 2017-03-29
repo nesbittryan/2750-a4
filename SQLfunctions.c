@@ -2,6 +2,74 @@
 
 #define MAX_QUERY 512
 
+void selectMessage(MYSQL *mysql, char *username, char *stream, int read, int sort) {
+	char query[MAX_QUERY];
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	if(read == -1) {
+		sprintf(query, "SELECT read_messages FROM Users WHERE Users.user_name = '%s' AND Users.stream_name = '%s'", username, stream);
+		if(mysql_query(mysql, query)){
+			printf("Could not run query\n");
+		}
+		if (!(res = mysql_store_result(mysql))){
+			printf("Results not Found!\n");
+		} else {
+			if((row = mysql_fetch_row(res))) {
+				read = atoi(row[0]);
+			}
+		}
+	}
+	if(sort == 0) {
+		sprintf(query, "SELECT * FROM Messages WHERE Messages.stream_name = '%s'", stream);
+		if(mysql_query(mysql, query)){
+			printf("Could not run query\n");
+		}
+		if (!(res = mysql_store_result(mysql))){
+			printf("No Streams Found!\n");
+		} else {
+			int i = 0;
+			if((row = mysql_fetch_row(res))) {
+				while (i != read) {
+					row = mysql_fetch_row(res);
+					++i;
+				}
+				printf("\tStream:%s\n<br>", row[0]);
+				printf("\tAuthor:%s\n<br>", row[2]);
+				printf("\tDate:%s\n<br>", row[1]);
+				printf("\tMessage:%s\n<br><br>", row[3]);
+			} else {
+				printf("No Posts in Stream!\n");
+			}
+		}
+	}
+}
+
+void selectStream(MYSQL *mysql, char *username) {
+	char query[MAX_QUERY];
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	sprintf(query, "SELECT stream_name FROM Users WHERE Users.user_name = '%s'", username);
+	if(mysql_query(mysql, query)){
+		printf("Could not run query\n");
+	}
+	if (!(res = mysql_store_result(mysql))){
+		printf("User has no permissions!\n");
+	} else {
+		if((row = mysql_fetch_row(res))) {
+			printf("<form action=\"home.php\" method=\"post\">\n");
+			printf("\t<input type=\"hidden\" name=\"username\" value=\"%s\">\n", username);
+			printf("\t%s<input type=\"radio\" name=\"streamChoice\" value =\"%s\" checked>\n", row[0], row[0]);
+			while ((row = mysql_fetch_row(res))) {
+				printf("\t%s<input type=\"radio\" name=\"streamChoice\" value =\"%s\">\n", row[0], row[0]);
+			}
+			printf("\tall<input type=\"radio\" name=\"streamChoice\" value =\"all\">\n");
+			printf("\t<input type=\"submit\" value=\"submit\">\n</form>\n");
+		} else {
+			printf("User has no permissions!\n");
+		}
+	}
+}
+
 void addPost(MYSQL *mysql, char *streamname, char *date, char *username, char *message) {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -116,7 +184,6 @@ void printUsers(MYSQL *mysql) {
 		}
 		printf("----------\n");
 	}
-
 }
 
 void printPosts(MYSQL *mysql) {

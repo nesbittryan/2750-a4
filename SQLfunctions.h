@@ -20,3 +20,7 @@ void printStreams(MYSQL *mysql);
 void addAuthor(MYSQL *mysql, char *flag, char *streamname, char *username);
 
 void addPost(MYSQL *mysql, char *date, char *streamname, char *username, char *message);
+
+void selectMessage(MYSQL *mysql, char *username, char *stream, int read, int sort);
+
+void selectStream(MYSQL *mysql, char *username);

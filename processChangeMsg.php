@@ -10,18 +10,18 @@ if((isset($streamChoice)) and ($streamChoice != "NULL_STREAM")) {
     echo ", in Stream: $streamChoice";
 }
 echo "<br>";
-exec("./sc header.wpml STREAM_NULL MSG_NULL $username", $header);
+exec("./sc header.wpml STREAM_NULL MSG_NULL \"$username\"", $header);
 foreach($header as $line) {
     echo "$line";
 }
 
 if((isset($streamChoice)) and ($streamChoice != "NULL_STREAM")) {
-    exec("./sc home.wpml $streamChoice $messageNum $username", $return);
+    exec("./sc home.wpml $streamChoice $messageNum \"$username\"", $return);
     foreach($return as $line) {
         echo "$line";
     }
     echo "<br>";
-    exec("./view.py STREAM_NAME $streamChoice $messageNum $sorting $username", $displayMsg);
+    exec("./view.py \"$username\" $streamChoice $messageNum $sorting", $displayMsg);
     foreach($displayMsg as $line) {
         echo "$line";
     }

@@ -11,35 +11,35 @@ Assumptions/Limitations I made about the assignment:
     That the TA marking this has mercy for my soul
 
 HOW TO USE EACH EXECUTABLE BY COMMAND LINE (ignore if only using web interface):
-    Site converter C file (without the quotes):
+    Site converter C file:
 
-        "./<path/>sc <filename.wpml> Streamname MessageNum Username"
+        ./<path/>sc <filename.wpml> Streamname MessageNum "Username"
 
         If you are not using hidden inputs, then these three values can be replaced
         by inputting STREAM_NULL MESSAGE_NULL and NAME_NULL
 
-        ie. " ./<path/>sc <filename.wpml> STREAM_NULL MESSAGE_NULL NAME_NULL "
+        ie. ./sc <filename.wpml> STREAM_NULL MESSAGE_NULL NAME_NULL
 
         I did it this way to pass around the username, current stream and current message num
         while still using post.
 
-    Add Author (without the quotes):
-        " ./<path/>addauthor flag[add|remove] username[multiple words allowed] streamList[, seperated, no space]"
-        ie. "./addauthor add Ryan Nesbitt s1,s2,s3,s4"
+    Add Author:
+        ./<path/>addauthor [add|remove] "username" streamList[, seperated, no spaces]
+        ie. ./addauthor add "Ryan Nesbitt" s1,s2,s3,s4
 
-    Post (without the quotes):
-        " ./<path/post streamname username[multiple words] MESSAGE_TEXT Message[multiple words]"
-        ie. "./post s1 Ryan Nesbitt MESSAGE_TEXT Hello this is my message"
+    Post:
+         ./<path/post streamname "username" "message[multiple words]"
+        ie. "./post s1 "Ryan Nesbitt" "Hello this is my message"
 
     Python view (without the quotes):
 
         This way is used when first calling it, and brings you to the select stream menu
-        "./<path/>view.py Username[multiple words allowed]"
-        ie "./view.py Ryan Nesbitt"
+        "./<path/>view.py "Username"
+        ie "./view.py "Ryan Nesbitt"
 
         This way is used when a stream is already selected.
             streamname = the name of the current stream
             readNum = the index of the message currently on, -1 resets list, -2 marks all as read
             sortFlag = method of viewing, 0 = date, 1 = by Author
-        "./<path/>view.py STREAM_NAME streamname readNum sortFlag Username[multiple words allowed]"
-        ie "./view.py STREAM_NAME s1 0 0 Ryan Nesbitt"
+        "./<path/>view.py STREAM_NAME streamname readNum sortFlag "Username[multiple words allowed]"
+        ie "./view.py STREAM_NAME s1 0 0 "Ryan Nesbitt"

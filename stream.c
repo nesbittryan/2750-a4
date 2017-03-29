@@ -17,6 +17,7 @@ void updateStream(struct userPost *st) {
 		exit(-1);
 	}
     addPost(&mysql, st->streamname, st->date, st->username, st->text);
+    mysql_close(&mysql);
 }
 
 void addUser(char *username, char *list) {
@@ -33,6 +34,7 @@ void addUser(char *username, char *list) {
         addAuthor(&mysql, "add", token, username);
         token = strtok(NULL, ",");
     }
+    mysql_close(&mysql);
 }
 
 void removeUser(char *username, char *list) {
@@ -49,4 +51,5 @@ void removeUser(char *username, char *list) {
         addAuthor(&mysql, "remove", token, username);
         token = strtok(NULL, ",");
     }
+    mysql_close(&mysql);
 }

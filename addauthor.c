@@ -6,20 +6,18 @@ int main(int argc, char ** argv) {
         printf("ie. ./addauthor add \"Ryan Nesbitt\" s1,s2,s3,s4\n");
         return(-1);
     }
-    int i = 2, rFlag = 0;
+    int rFlag = 0;
     if(strcmp(argv[1], "remove") == 0) {
         rFlag = 1;
     }
-    char * username = malloc(sizeof(char) * 100);
+    char username[64];
     char streams[100];
-    strcpy(username, argv[i]);
-    ++i;
-    strcpy(streams, argv[i]);
+    strcpy(username, argv[2]);
+    strcpy(streams, argv[3]);
     if(rFlag == 1) {
         removeUser(username, streams);
     } else {
         addUser(username, streams);
     }
-    free(username);
     return(0);
 }

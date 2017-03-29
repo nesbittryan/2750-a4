@@ -1,5 +1,5 @@
 <?php
-exec("./sc index.wpml STREAM_NULL MSG_NULL NAME_NULL", $index);
+exec("./sc index.wpml", $index);
 foreach($index as $line) {
     echo "$line";
 }

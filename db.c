@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 				clrstr(username);
 				strcpy(username, argv[j+3]);
 				addAuthor(&mysql, argv[j+1], argv[j+2], username);
-				j = 4;
+				j = j + 4;
 			}
 		} else if(strcmp(argv[j], "-addpost") == 0) {
 			char date[64], username[64], message[255];
@@ -50,11 +50,50 @@ int main(int argc, char *argv[]) {
 			++l;
 			strcpy(message, argv[j+l]);
 			addPost(&mysql, argv[j+1], date, username, message);
-			j = l + 1;
+			j = j + l - 1;
+		} else if(strcmp(argv[j], "-view") == 0) {
+			char username[64];
+			int l = 1;
+			if(argv[j+l] != NULL) {
+				strcpy(username, argv[j+l]);
+				++l;
+				if(argv[j+l] != NULL && argv[j+l+1] != NULL && argv[j+l+2] != NULL) {
+					char streamname[64];
+					strcpy(streamname, argv[j+l]);
+					++l;
+					int readNum = atoi(argv[j+l]);
+					++l;
+					int sortFlag = atoi(argv[j+l]);
+					++l;
+					selectMessage(&mysql, username, streamname, readNum, sortFlag);
+				} else {
+					selectStream(&mysql, username);
+				}
+			} else {
+				printf("Inproper Usage...\n");
+			}
+			j = l + j - 1;
+		} else if(strcmp(argv[j], "-limit") == 0) {
+
+			char streamname[64], query[MAX_QUERY];
+			MYSQL_RES *res;
+			MYSQL_ROW row;
+			int limit = 0;
+			strcpy(streamname, argv[j+1]);
+			sprintf(query, "SELECT * FROM Messages WHERE Messages.stream_name = '%s'", streamname);
+			mysql_query(&mysql, query);
+			res = mysql_store_result(&mysql);
+			while((row = mysql_fetch_row(res))) {
+				++limit;
+			}
+			--limit;
+			printf("%d", limit);
+			j = j + 1;
 		} else {
 			printf("Invalid command, use -help for list of valid commands\n");
 		}
 		++j;
 	}
+	mysql_close(&mysql);
 	return(0);
 }

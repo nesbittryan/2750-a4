@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS = -Wall -g -ansi
 
-all: libstream post addauthor creator mydb
+all: libstream post addauthor creator db
 
 post: post.cc libstream.a
 	$(CC) $(CFLAGS) converter.c -o c
@@ -25,5 +25,5 @@ libstream: stream.c stream.h SQLfunctions.c SQLfunctions.h
 creator: siteCreator.c
 	$(CC) $(CFLAGS) siteCreator.c -o sc
 
-mydb:
+db: db.c
 	$(CC) $(CFLAGS) db.c -o db -L. -lstream -lmysqlclient -L/usr/lib/x86_64-linux-gnu/

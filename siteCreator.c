@@ -27,10 +27,10 @@ void addRadioButton(char *tok, char *username, char *streamname, char *messagenu
 void addExe(char *tok);
 
 int main(int argc, char **argv) {
-    if(argc < 5) {
-        printf("USAGE: ./sc filename.wpml STREAMNAME MESSAGENUM USERNAME\n");
-        printf("(Use STREAM_NULL, MSG_NULL, and NAME_NULL if not applicable)\n");
-        printf("ie. ./sc filename.wpml STREAM_NULL MSG_NULL NAME_NULL\n");
+    if(argc < 2) {
+        printf("USAGE: ./sc filename.wpml STREAMNAME MESSAGENUM \"USERNAME\"\n");
+        printf("(if using hidden values, include the last 3 args in above order)\n");
+        printf("ie. ./sc filename.wpml\nor ./sc filename.wpml Cats 2 \"Ryan Nesbitt\"\n");
         return(-1);
     }
     int i = 1;
@@ -43,20 +43,22 @@ int main(int argc, char **argv) {
         printf("Invalid File\n");
         return(-1);
     }
-    char username[500];
-    char streamname[50];
-    char messagenum[50];
-
-    strcpy(streamname, argv[i]);
+    char username[65];
+    char streamname[65];
+    char messagenum[10];
+    strcpy(streamname, "STREAM_NULL");
+    strcpy(streamname, "MSG_NULL");
+    strcpy(streamname, "NAME_NULL");
+    if(argv[i] != NULL) {
+        strcpy(streamname, argv[i]);
+    }
     ++i;
-    strcpy(messagenum, argv[i]);
+    if(argv[i] != NULL) {
+        strcpy(messagenum, argv[i]);
+    }
     ++i;
-    strcpy(username, argv[i]);
-    ++i;
-    while(argv[i] != NULL) {
-        strcat(username, " ");
-        strcat(username, argv[i]);
-        ++i;
+    if(argv[i] != NULL) {
+        strcpy(username, argv[i]);
     }
     printf("<html>\n");
 

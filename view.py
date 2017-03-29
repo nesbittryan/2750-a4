@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import os, sys, curses
 from datetime import datetime
+from subprocess import call
+from subprocess import check_output
 
 def createStreamList():
     streamList = []
@@ -149,53 +151,54 @@ def updateReadMessages(streamname, username, readNum, limit):
     fpcopy.close()
     os.rename("copy", outFileUserName)
 
-def printButtons(username, inputFlag, readNum, limit, sortFlag):
-    print("<form action=\"processChangeMsg.php\" method=\"post\">")
-    print("\n\t<input type=\"hidden\" name=\"username\" value=\""+ username.strip() +"\">\n")
-    print("\n\t<input type=\"hidden\" name=\"streamChoice\" value=\""+ str(inputFlag) + "\">\n")
+def printButtons(username, inputFlag, limit, readNum, sortFlag):
+    print("<form action=\"processChangeMsg.php\" method=\"post\">", end="")
+    print("<input type=\"hidden\" name=\"username\" value=\""+ username.strip() +"\">", end="")
+    print("<input type=\"hidden\" name=\"streamChoice\" value=\""+ str(inputFlag) + "\">", end="")
     if readNum > 0:
-        print("\n\t<input type=\"hidden\" name=\"messageNum\" value=\""+ str(readNum-1) +"\">\n")
+        print("<input type=\"hidden\" name=\"messageNum\" value=\""+ str(readNum-1) +"\">", end="")
     else:
-        print("\n\t<input type=\"hidden\" name=\"messageNum\" value=\""+ str(readNum) +"\">\n")
-    print("\n\t<input type=\"hidden\" name=\"sorting\" value=\""+ str(sortFlag) + "\">\n")
-    print("\t<input type=\"submit\" value=\"Prev Post\">\n</form>\n")
+        print("<input type=\"hidden\" name=\"messageNum\" value=\""+ str(readNum) +"\">", end="")
+    print("<input type=\"hidden\" name=\"sorting\" value=\""+ str(sortFlag) + "\">", end="")
+    print("<input type=\"submit\" value=\"Prev Post\"></form>", end="")
 
-    print("<form action=\"processChangeMsg.php\" method=\"post\">")
-    print("\n\t<input type=\"hidden\" name=\"username\" value=\""+ username.strip() +"\">\n")
-    print("\n\t<input type=\"hidden\" name=\"streamChoice\" value=\""+ str(inputFlag) + "\">\n")
-    if int(readNum) < (int(limit) - 1):
+    print("<form action=\"processChangeMsg.php\" method=\"post\">", end="")
+    print("<input type=\"hidden\" name=\"username\" value=\""+ username.strip() +"\">", end="")
+    print("<input type=\"hidden\" name=\"streamChoice\" value=\""+ str(inputFlag) + "\">", end="")
+    if(int(readNum) < int(limit)):
         if int(readNum) == -1:
-            print("\n\t<input type=\"hidden\" name=\"messageNum\" value=\""+ str(readNum+2) +"\">\n")
+            print("<input type=\"hidden\" name=\"messageNum\" value=\""+ str(readNum+2) +"\">", end="")
         else:
-            print("\n\t<input type=\"hidden\" name=\"messageNum\" value=\""+ str(readNum+1) +"\">\n")
+            print("<input type=\"hidden\" name=\"messageNum\" value=\""+ str(readNum+1) +"\">", end="")
     else:
-        print("\n\t<input type=\"hidden\" name=\"messageNum\" value=\""+ str(readNum) +"\">\n")
-    print("\n\t<input type=\"hidden\" name=\"sorting\" value=\""+ str(sortFlag) + "\">\n")
-    print("\t<input type=\"submit\" value=\"Next Post\">\n</form>\n")
+        print("<input type=\"hidden\" name=\"messageNum\" value=\""+ str(readNum) +"\">", end="")
+    print("<input type=\"hidden\" name=\"sorting\" value=\""+ str(sortFlag) + "\">", end="")
+    print("<input type=\"submit\" value=\"Next Post\"></form>", end="")
 
-    print("<form action=\"processChangeMsg.php\" method=\"post\">")
-    print("\n\t<input type=\"hidden\" name=\"username\" value=\""+ username.strip() +"\">\n")
-    print("\n\t<input type=\"hidden\" name=\"streamChoice\" value=\""+ str(inputFlag) + "\">\n")
-    print("\n\t<input type=\"hidden\" name=\"messageNum\" value=\"-2\">\n")
-    print("\n\t<input type=\"hidden\" name=\"sorting\" value=\""+ str(sortFlag) + "\">\n")
-    print("\t<input type=\"submit\" value=\"Mark all Read\">\n</form>\n")
+    print("<form action=\"processChangeMsg.php\" method=\"post\">", end="")
+    print("<input type=\"hidden\" name=\"username\" value=\""+ username.strip() +"\">", end="")
+    print("<input type=\"hidden\" name=\"streamChoice\" value=\""+ str(inputFlag) + "\">", end="")
+    print("<input type=\"hidden\" name=\"messageNum\" value=\"-2\">", end="")
+    print("<input type=\"hidden\" name=\"sorting\" value=\""+ str(sortFlag) + "\">", end="")
+    print("<input type=\"submit\" value=\"Mark all Read\"></form>", end="")
 
-    print("<form action=\"processChangeMsg.php\" method=\"post\">")
-    print("\n\t<input type=\"hidden\" name=\"username\" value=\""+ username.strip() +"\">\n")
-    print("\n\t<input type=\"hidden\" name=\"streamChoice\" value=\""+ str(inputFlag) + "\">\n")
-    print("\n\t<input type=\"hidden\" name=\"messageNum\" value=\"0\">\n")
+    print("<form action=\"processChangeMsg.php\" method=\"post\">", end="")
+    print("<input type=\"hidden\" name=\"username\" value=\""+ username.strip() +"\">", end="")
+    print("<input type=\"hidden\" name=\"streamChoice\" value=\""+ str(inputFlag) + "\">", end="")
+    print("<input type=\"hidden\" name=\"messageNum\" value=\"0\">", end="")
     if sortFlag == 1:
-        print("\n\t<input type=\"hidden\" name=\"sorting\" value=\"0\">\n")
+        print("<input type=\"hidden\" name=\"sorting\" value=\"0\">", end="")
     else:
-        print("\n\t<input type=\"hidden\" name=\"sorting\" value=\"1\">\n")
-    print("\t<input type=\"submit\" value=\"Sorting\">\n</form>\n")
+        print("<input type=\"hidden\" name=\"sorting\" value=\"1\">", end="")
+    print("<input type=\"submit\" value=\"Sorting\"></form>", end="")
 
-    print("<form action=\"processChangeMsg.php\" method=\"post\">")
-    print("\n\t<input type=\"hidden\" name=\"username\" value=\""+ username.strip() +"\">\n")
-    print("\n\t<input type=\"hidden\" name=\"streamChoice\" value=\""+ inputFlag + "\">\n")
-    print("\n\t<input type=\"hidden\" name=\"messageNum\" value=\"-1\">\n")
-    print("\n\t<input type=\"hidden\" name=\"sorting\" value=\""+ str(sortFlag) + "\">\n")
-    print("\t<input type=\"submit\" value=\"Check for New\">\n</form>\n")
+    print("<form action=\"processChangeMsg.php\" method=\"post\">", end="")
+    print("<input type=\"hidden\" name=\"username\" value=\""+ username.strip() +"\">", end="")
+    print("<input type=\"hidden\" name=\"streamChoice\" value=\""+ inputFlag + "\">", end="")
+    print("<input type=\"hidden\" name=\"messageNum\" value=\"-1\">", end="")
+    print("<input type=\"hidden\" name=\"sorting\" value=\""+ str(sortFlag) + "\">", end="")
+    print("<input type=\"submit\" value=\"Check for New\"></form>", end="")
+    print("\n")
 
 def getLimit(inputFlag, userStreamList):
     limit = 0
@@ -215,50 +218,18 @@ def getLimit(inputFlag, userStreamList):
 
 def main():
     #checking for valid username, and placing it into variable
-    streamname = ""
-    username = ""
-    readNum = 0
-    if sys.argv[1] != "STREAM_NAME":
-        tempVar = 0
-        for word in sys.argv:
-            if tempVar != 0:
-                username = username + " " + word
-            tempVar = tempVar + 1
-        username = username.lstrip()
-        # creating list of all streams
-        streamList = createStreamList()
-
-        # checking each user file for a list of streams they are associated with
-        userPermissionStreamList = createPermissionList(username, streamList)
-        print ("<form action=\"home.php\" method=\"post\">\n")
-        print ("\t<input type=\"hidden\" name=\"username\" value=\""+ username +"\">\n")
-        i = 0
-        for word in userPermissionStreamList:
-            print (word +"<input type=\"radio\" name=\"streamChoice\"")
-            print (" value =\"" + word + "\"")
-            if i == 0:
-                print ("checked>")
-            else:
-                print (">")
-            i = i + 1
-        print ("all<input type=\"radio\" name=\"streamChoice\" value =\"all\"")
-        if i == 0:
-            print ("checked>")
-        else:
-            print (">")
-        print ("\t<input type=\"submit\" value=\"submit\">\n</form>\n")
-        return()
-
-    streamname = sys.argv[2]
-    readNum = int(sys.argv[3])
-    sortFlag = int(sys.argv[4])
-    i = 0
-    for word in sys.argv:
-        if i > 4:
-            username = username +" "+ word
-        i = i + 1
-
-    username = username.strip()
+    if len(sys.argv) == 2:
+        call(["./db", "-view", sys.argv[1]])
+    elif len(sys.argv) == 5:
+        username = sys.argv[1]
+        streamname = sys.argv[2]
+        readNum = int(sys.argv[3])
+        sortFlag = int(sys.argv[4])
+        if(streamname != "all"):
+            limit = check_output((["./db", "-limit", streamname]))
+            printButtons(username, streamname, int(limit), readNum, sortFlag)
+            call(["./db", "-view", username, streamname, str(readNum), str(sortFlag)])
+    return(0);
 
     # creating list of all streams
     streamList = createStreamList()
