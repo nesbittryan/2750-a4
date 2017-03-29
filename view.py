@@ -225,10 +225,10 @@ def main():
         streamname = sys.argv[2]
         readNum = int(sys.argv[3])
         sortFlag = int(sys.argv[4])
-        if(streamname != "all"):
-            limit = check_output((["./db", "-limit", streamname]))
-            printButtons(username, streamname, int(limit), readNum, sortFlag)
-            call(["./db", "-view", username, streamname, str(readNum), str(sortFlag)])
+        limit = check_output((["./db", "-limit", streamname]))
+        limit = 5;
+        printButtons(username, streamname, int(limit), readNum, sortFlag)
+        call(["./db", "-view", username, streamname, str(readNum), str(sortFlag)])
     return(0);
 
     # creating list of all streams

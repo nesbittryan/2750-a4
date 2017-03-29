@@ -6,40 +6,54 @@ void selectMessage(MYSQL *mysql, char *username, char *stream, int read, int sor
 	char query[MAX_QUERY];
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	if(read == -1) {
-		sprintf(query, "SELECT read_messages FROM Users WHERE Users.user_name = '%s' AND Users.stream_name = '%s'", username, stream);
-		if(mysql_query(mysql, query)){
-			printf("Could not run query\n");
+
+	if(strcmp(stream, "all") == 0) {
+		if(read == -1) {
+			read= 0;
 		}
-		if (!(res = mysql_store_result(mysql))){
-			printf("Results not Found!\n");
+		if(sort == 0) {
+			strcpy(query, "SELECT * FROM Messages");
 		} else {
-			if((row = mysql_fetch_row(res))) {
-				read = atoi(row[0]);
+			strcpy(query, "SELECT * FROM Messages ORDER BY Messages.user_name");
+		}
+	} else {
+		if(read == -1) {
+			sprintf(query, "SELECT read_messages FROM Users WHERE Users.user_name = '%s' AND Users.stream_name = '%s'", username, stream);
+			if(mysql_query(mysql, query)){
+				printf("Could not run query\n");
 			}
+			if (!(res = mysql_store_result(mysql))){
+				printf("Results not Found!\n");
+			} else {
+				if((row = mysql_fetch_row(res))) {
+					read = atoi(row[0]);
+				}
+			}
+		}
+		if(sort == 0) {
+			sprintf(query, "SELECT * FROM Messages WHERE Messages.stream_name = '%s'", stream);
+		} else {
+			sprintf(query, "SELECT * FROM Messages WHERE Messages.stream_name = '%s' ORDER BY Messages.user_name", stream);
 		}
 	}
-	if(sort == 0) {
-		sprintf(query, "SELECT * FROM Messages WHERE Messages.stream_name = '%s'", stream);
-		if(mysql_query(mysql, query)){
-			printf("Could not run query\n");
-		}
-		if (!(res = mysql_store_result(mysql))){
-			printf("No Streams Found!\n");
-		} else {
-			int i = 0;
-			if((row = mysql_fetch_row(res))) {
-				while (i != read) {
-					row = mysql_fetch_row(res);
-					++i;
-				}
-				printf("\tStream:%s\n<br>", row[0]);
-				printf("\tAuthor:%s\n<br>", row[2]);
-				printf("\tDate:%s\n<br>", row[1]);
-				printf("\tMessage:%s\n<br><br>", row[3]);
-			} else {
-				printf("No Posts in Stream!\n");
+	if(mysql_query(mysql, query)){
+		printf("Could not run query\n");
+	}
+	if (!(res = mysql_store_result(mysql))){
+		printf("No Streams Found!\n");
+	} else {
+		int i = 0;
+		if((row = mysql_fetch_row(res))) {
+			while (i != read) {
+				row = mysql_fetch_row(res);
+				++i;
 			}
+			printf("\tStream:%s\n<br>", row[0]);
+			printf("\tAuthor:%s\n<br>", row[2]);
+			printf("\tDate:%s\n<br>", row[1]);
+			printf("\tMessage:%s\n<br><br>", row[3]);
+		} else {
+			printf("No Posts in Stream!\n");
 		}
 	}
 }
