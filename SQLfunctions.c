@@ -14,11 +14,11 @@ void selectMessage(MYSQL *mysql, char *username, char *stream, int read, int sor
 		if(sort == 0) {
 			strcpy(query, "SELECT * FROM Messages");
 		} else {
-			strcpy(query, "SELECT * FROM Messages ORDER BY Messages.user_name");
+			strcpy(query, "SELECT * FROM Messages ORDER BY user_name");
 		}
 	} else {
 		if(read == -1) {
-			sprintf(query, "SELECT read_messages FROM Users WHERE Users.user_name = '%s' AND Users.stream_name = '%s'", username, stream);
+			sprintf(query, "SELECT read_messages FROM Users WHERE user_name = '%s' AND stream_name = '%s'", username, stream);
 			if(mysql_query(mysql, query)){
 				printf("Could not run query\n");
 			}
@@ -30,12 +30,40 @@ void selectMessage(MYSQL *mysql, char *username, char *stream, int read, int sor
 				}
 			}
 		}
-		if(sort == 0) {
-			sprintf(query, "SELECT * FROM Messages WHERE Messages.stream_name = '%s'", stream);
+		int total = -1;
+		sprintf(query, "SELECT * FROM Messages WHERE stream_name = '%s'", stream);
+		mysql_query(mysql, query);
+		res = mysql_store_result(mysql);
+		while((row = mysql_fetch_row(res))) {
+			++total;
+		}
+		if(total == -1) {
+			total = 1;
+		}
+		sprintf(query, "SELECT read_messages FROM Users WHERE user_name = '%s' AND stream_name = '%s'", username, stream);
+		if(mysql_query(mysql, query)){
+			printf("Could not run query\n");
+		}
+		if (!(res = mysql_store_result(mysql))){
+			printf("Results not Found!\n");
 		} else {
-			sprintf(query, "SELECT * FROM Messages WHERE Messages.stream_name = '%s' ORDER BY Messages.user_name", stream);
+			if((row = mysql_fetch_row(res))) {
+				int temp = atoi(row[0]);
+				if((read + 1) > temp && read < total) {
+					sprintf(query, "UPDATE Users SET read_messages = %d WHERE user_name = '%s' AND stream_name = '%s'", read + 1, username, stream);
+		 			if(mysql_query(mysql, query)){
+						printf("Could not run query\n");
+					}
+				}
+			}
+		}
+		if(sort == 0) {
+			sprintf(query, "SELECT * FROM Messages WHERE stream_name = '%s'", stream);
+		} else {
+			sprintf(query, "SELECT * FROM Messages WHERE stream_name = '%s' ORDER BY user_name", stream);
 		}
 	}
+
 	if(mysql_query(mysql, query)){
 		printf("Could not run query\n");
 	}

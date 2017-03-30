@@ -74,21 +74,71 @@ int main(int argc, char *argv[]) {
 			}
 			j = l + j - 1;
 		} else if(strcmp(argv[j], "-limit") == 0) {
-
 			char streamname[64], query[MAX_QUERY];
 			MYSQL_RES *res;
 			MYSQL_ROW row;
 			int limit = 0;
 			strcpy(streamname, argv[j+1]);
-			sprintf(query, "SELECT * FROM Messages WHERE Messages.stream_name = '%s'", streamname);
+			if(strcmp(streamname, "all") == 0) {
+				sprintf(query, "SELECT * FROM Messages");
+			} else {
+				sprintf(query, "SELECT * FROM Messages WHERE Messages.stream_name = '%s'", streamname);
+			}
 			mysql_query(&mysql, query);
 			res = mysql_store_result(&mysql);
 			while((row = mysql_fetch_row(res))) {
 				++limit;
 			}
 			--limit;
-			printf("%d", limit);
+			printf("%d\n", limit);
 			j = j + 1;
+		} else if(strcmp(argv[j], "-markAllRead") == 0) {
+			char username[64], streamname[64], query[MAX_QUERY];
+			MYSQL_RES *res;
+			MYSQL_ROW row;
+			if(argv[j+1] != NULL && argv[j+2] != NULL) {
+				strcpy(username, argv[j+1]);
+				strcpy(streamname, argv[j+2]);
+				if(strcmp(streamname, "all") != 0) {
+					int limit = 0;
+					sprintf(query, "SELECT * FROM Messages WHERE stream_name = '%s'", streamname);
+					mysql_query(&mysql, query);
+					res = mysql_store_result(&mysql);
+					while((row = mysql_fetch_row(res))) {
+						++limit;
+					}
+					sprintf(query, "UPDATE Users SET read_messages = %d WHERE user_name = '%s' AND stream_name = '%s'", limit - 1, username, streamname);
+					printf("%d\n", limit - 1);
+					mysql_query(&mysql, query);
+					j = j + 2;
+				}
+			} else {
+				printf("Inproper Usage...\n");
+			}
+		} else if(strcmp(argv[j], "-getRead") == 0) {
+			char username[64], streamname[64], query[MAX_QUERY];
+			MYSQL_RES *res;
+			MYSQL_ROW row;
+			int read = 0;
+			strcpy(username, argv[j+1]);
+			strcpy(streamname, argv[j+2]);
+			if(strcmp(streamname, "all") == 0) {
+				printf("%d\n", read);
+			} else {
+				sprintf(query, "SELECT read_messages FROM Users WHERE user_name = '%s' AND stream_name = '%s'", username, streamname);
+				if(mysql_query(&mysql, query)){
+					printf("Could not run query\n");
+				}
+				if (!(res = mysql_store_result(&mysql))){
+					printf("0\n");
+				} else {
+					if((row = mysql_fetch_row(res))) {
+						read = atoi(row[0]);
+					}
+					printf("%d\n", read);
+				}
+			}
+			j = j + 2;
 		} else {
 			printf("Invalid command, use -help for list of valid commands\n");
 		}
